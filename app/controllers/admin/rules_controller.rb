@@ -11,6 +11,10 @@ module Admin
       @rule  = Rule.new
     end
 
+    def edit
+      authorize @rule, :update?
+    end
+
     def create
       authorize :rule, :create?
 
@@ -22,10 +26,6 @@ module Admin
         @rules = Rule.ordered
         render :index
       end
-    end
-
-    def edit
-      authorize @rule, :update?
     end
 
     def update
@@ -53,7 +53,8 @@ module Admin
     end
 
     def resource_params
-      params.require(:rule).permit(:text, :priority)
+      params
+        .expect(rule: [:text, :hint, :priority])
     end
   end
 end

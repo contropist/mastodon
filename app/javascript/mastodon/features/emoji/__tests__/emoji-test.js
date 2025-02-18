@@ -74,12 +74,12 @@ describe('emoji', () => {
         .toEqual('<span class="invisible">😄<br>😴</span><img draggable="false" class="emojione" alt="😇" title=":innocent:" src="/emoji/1f607.svg">');
     });
 
-    it('skips the textual presentation VS15 character', () => {
+    it('does not emojify emojis with textual presentation VS15 character', () => {
       expect(emojify('✴︎')) // This is U+2734 EIGHT POINTED BLACK STAR then U+FE0E VARIATION SELECTOR-15
-        .toEqual('<img draggable="false" class="emojione" alt="✴" title=":eight_pointed_black_star:" src="/emoji/2734_border.svg">');
+        .toEqual('✴︎');
     });
 
-    it('does an simple emoji properly', () => {
+    it('does a simple emoji properly', () => {
       expect(emojify('♀♂'))
         .toEqual('<img draggable="false" class="emojione" alt="♀" title=":female_sign:" src="/emoji/2640.svg"><img draggable="false" class="emojione" alt="♂" title=":male_sign:" src="/emoji/2642.svg">');
     });
@@ -90,8 +90,8 @@ describe('emoji', () => {
     });
 
     it('keeps ordering as expected (issue fixed by PR 20677)', () => {
-      expect(emojify('<p>💕 <a class="hashtag" href="https://example.com/tags/foo" rel="nofollow noopener noreferrer" target="_blank">#<span>foo</span></a> test: foo.</p>'))
-        .toEqual('<p><img draggable="false" class="emojione" alt="💕" title=":two_hearts:" src="/emoji/1f495.svg"> <a class="hashtag" href="https://example.com/tags/foo" rel="nofollow noopener noreferrer" target="_blank">#<span>foo</span></a> test: foo.</p>');
+      expect(emojify('<p>💕 <a class="hashtag" href="https://example.com/tags/foo" rel="nofollow noopener" target="_blank">#<span>foo</span></a> test: foo.</p>'))
+        .toEqual('<p><img draggable="false" class="emojione" alt="💕" title=":two_hearts:" src="/emoji/1f495.svg"> <a class="hashtag" href="https://example.com/tags/foo" rel="nofollow noopener" target="_blank">#<span>foo</span></a> test: foo.</p>');
     });
   });
 });

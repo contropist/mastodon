@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-describe Admin::RolesController do
+RSpec.describe Admin::RolesController do
   render_views
 
   let(:permissions)  { UserRole::Flags::NONE }
@@ -18,7 +20,7 @@ describe Admin::RolesController do
 
     context 'when user does not have permission to manage roles' do
       it 'returns http forbidden' do
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to have_http_status(403)
       end
     end
 
@@ -38,7 +40,7 @@ describe Admin::RolesController do
 
     context 'when user does not have permission to manage roles' do
       it 'returns http forbidden' do
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to have_http_status(403)
       end
     end
 
@@ -66,11 +68,9 @@ describe Admin::RolesController do
         let(:selected_position) { 1 }
         let(:selected_permissions_as_keys) { %w(manage_roles) }
 
-        it 'redirects to roles page' do
+        it 'redirects to roles page and creates role' do
           expect(response).to redirect_to(admin_roles_path)
-        end
 
-        it 'creates new role' do
           expect(UserRole.find_by(name: 'Bar')).to_not be_nil
         end
       end
@@ -79,11 +79,9 @@ describe Admin::RolesController do
         let(:selected_position) { 100 }
         let(:selected_permissions_as_keys) { %w(manage_roles) }
 
-        it 'renders new template' do
+        it 'renders new template and does not create role' do
           expect(response).to render_template(:new)
-        end
 
-        it 'does not create new role' do
           expect(UserRole.find_by(name: 'Bar')).to be_nil
         end
       end
@@ -92,11 +90,9 @@ describe Admin::RolesController do
         let(:selected_position) { 1 }
         let(:selected_permissions_as_keys) { %w(manage_roles manage_users manage_reports) }
 
-        it 'renders new template' do
+        it 'renders new template and does not create role' do
           expect(response).to render_template(:new)
-        end
 
-        it 'does not create new role' do
           expect(UserRole.find_by(name: 'Bar')).to be_nil
         end
       end
@@ -107,11 +103,9 @@ describe Admin::RolesController do
         let(:selected_position) { 1 }
         let(:selected_permissions_as_keys) { %w(manage_roles manage_users manage_reports) }
 
-        it 'redirects to roles page' do
+        it 'redirects to roles page and creates new role' do
           expect(response).to redirect_to(admin_roles_path)
-        end
 
-        it 'creates new role' do
           expect(UserRole.find_by(name: 'Bar')).to_not be_nil
         end
       end
@@ -128,7 +122,7 @@ describe Admin::RolesController do
 
     context 'when user does not have permission to manage roles' do
       it 'returns http forbidden' do
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to have_http_status(403)
       end
     end
 
@@ -145,7 +139,7 @@ describe Admin::RolesController do
         let(:role_position) { current_role.position + 1 }
 
         it 'returns http forbidden' do
-          expect(response).to have_http_status(:forbidden)
+          expect(response).to have_http_status(403)
         end
       end
     end
@@ -164,11 +158,9 @@ describe Admin::RolesController do
     end
 
     context 'when user does not have permission to manage roles' do
-      it 'returns http forbidden' do
-        expect(response).to have_http_status(:forbidden)
-      end
+      it 'returns http forbidden and does not update role' do
+        expect(response).to have_http_status(403)
 
-      it 'does not update the role' do
         expect(role.reload.name).to eq 'Bar'
       end
     end
@@ -177,11 +169,9 @@ describe Admin::RolesController do
       let(:permissions) { UserRole::FLAGS[:manage_roles] }
 
       context 'when role has permissions the user doesn\'t' do
-        it 'renders edit template' do
+        it 'renders edit template and does not update role' do
           expect(response).to render_template(:edit)
-        end
 
-        it 'does not update the role' do
           expect(role.reload.name).to eq 'Bar'
         end
       end
@@ -190,11 +180,9 @@ describe Admin::RolesController do
         let(:permissions) { UserRole::FLAGS[:manage_roles] | UserRole::FLAGS[:manage_users] }
 
         context 'when user outranks the role' do
-          it 'redirects to roles page' do
+          it 'redirects to roles page and updates role' do
             expect(response).to redirect_to(admin_roles_path)
-          end
 
-          it 'updates the role' do
             expect(role.reload.name).to eq 'Baz'
           end
         end
@@ -202,11 +190,9 @@ describe Admin::RolesController do
         context 'when role outranks user' do
           let(:role_position) { current_role.position + 1 }
 
-          it 'returns http forbidden' do
-            expect(response).to have_http_status(:forbidden)
-          end
+          it 'returns http forbidden and does not update role' do
+            expect(response).to have_http_status(403)
 
-          it 'does not update the role' do
             expect(role.reload.name).to eq 'Bar'
           end
         end
@@ -224,7 +210,7 @@ describe Admin::RolesController do
 
     context 'when user does not have permission to manage roles' do
       it 'returns http forbidden' do
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to have_http_status(403)
       end
     end
 
@@ -241,7 +227,7 @@ describe Admin::RolesController do
         let(:role_position) { current_role.position + 1 }
 
         it 'returns http forbidden' do
-          expect(response).to have_http_status(:forbidden)
+          expect(response).to have_http_status(403)
         end
       end
     end
